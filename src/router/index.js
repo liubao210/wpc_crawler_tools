@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import myselect from '@/components/myselect'
 import ViewData from '@/components/ViewData'
 import recall from '@/components/CrawlerRecall'
 
@@ -21,7 +19,7 @@ export default new Router({
       component : recall
     },
     {
-      path : '/viewdata',
+      path : '/ViewData',
       name : ViewData,
       component : ViewData
     }

@@ -1,11 +1,11 @@
 <template>
     <div>
-      <h1>select</h1>
+      <h1>Select</h1>
       <div class="select">
         <el-select v-model="SiteValue" @change="ChangeSite" placeholder="请选择站点">
           <el-option
             v-for="item in urllist"
-            :key="item.value"
+            :key="item.index"
             :label="item.label"
             :value="item.value">
           </el-option>
@@ -13,7 +13,7 @@
         <el-select v-model="SplitterValue" @change="ChangeSplitter" clearable :disabled=disabled1 placeholder="请选择spl">
           <el-option
             v-for="item in SplitterList"
-            :key="item.value"
+            :key="item.index"
             :label="item.label"
             :value="item.value">
           </el-option>
@@ -22,7 +22,7 @@
         <el-select v-model="BrandValue" clearable :disabled=disabled2 placeholder="请选择brand">
           <el-option
             v-for="item in BrandList"
-            :key="item.value"
+            :key="item.index"
             :label="item.label"
             :value="item.value">
           </el-option>
@@ -254,11 +254,11 @@ export default {
           }]
         }
       ],
-      SiteValue:'',
+      SiteValue:null,
       index1:'',
-      SplitterValue:'',
+      SplitterValue:null,
       index2:'',
-      BrandValue:'',
+      BrandValue:null,
       index3:'',
       SplitterList:[],
       BrandList:[],
@@ -266,17 +266,20 @@ export default {
         {
           url: "japan.com",
           value: 0,
+          index:0,
           label: "japan",
           children: [
             {
               url: "jp.laptop.com",
               value:0,
+              index:0,
               label: "laptop",
               children: []
             },
             {
               url: "jp.deskyop.com",
               value:1,
+              index:1,
               label: "desktop",
               children: []
             }
@@ -285,17 +288,20 @@ export default {
         {
           url: "korea.com",
           value: 0,
+          index:1,
           label: "korea",
           children: [
             {
               url: "ko.laptop.com",
               value:0,
+              index:0,
               label: "laptop",
               children: []
             },
             {
               url: "ko.desktop.com",
               value:1,
+              index:1,
               label: "desktop",
               children: []
             }
@@ -303,6 +309,7 @@ export default {
         }
       ],
       props: {
+        url:'url',
         value: 'value',
         label: 'label',
         children: 'children'
@@ -317,12 +324,6 @@ export default {
     // console.log(this.urllist)
   },
   methods: {
-    brandchange() {
-      // var objs = document.getElementById("brand");
-      // var brand = objs.options[objs.selectedIndex].getAttribute('value');
-      // alert(brand)
-      alert("brandchange")
-    },
     brandchange2() {
       alert("change")
       console.log(this.urllist[index])
@@ -332,25 +333,12 @@ export default {
     },
     handleItemChange(val) {
       console.log('active item:', val);
-      // console.log(this.urllist[0]);
       this.urllist[0].children[0].children = [
         {
           value: "thinkpad.com",
           label: "thinkpad",
         },
       ]
-      //
-      // setTimeout(_ => {
-      //   if (val.indexOf('江苏') > -1 && !this.options2[0].cities.length) {
-      //     this.options2[0].cities = [{
-      //       label: '南京'
-      //     }];
-      //   } else if (val.indexOf('浙江') > -1 && !this.options2[1].cities.length) {
-      //     this.options2[1].cities = [{
-      //       label: '杭州'
-      //     }];
-      //   }
-      // }, 300);
     },
     ChangeSite(val){
       console.log(val)
@@ -359,7 +347,11 @@ export default {
       this.disabled1 = false
     },
     ChangeSplitter(val){
-      this.BrandList = this.SplitterList[val].children
+      splitterUrl = this.SplitterList[val].url
+
+      //在这里写 axios请求，把选择的splitter的url发送给后台，返回的brand的json数据,赋值给BrandList
+
+      // this.BrandList = this.SplitterList[val].children
       this.disabled2 = false
       console.log(this.SplitterList)
       console.log(this.BrandList)
@@ -368,7 +360,33 @@ export default {
       this.disabled1 = false
     },
     IsLoading() {
-      this.loading = !this.loading
+      if (this.SiteValue === null){
+        alert("请选择爬取站点")
+      } else{
+        this.SendUrl()
+      }
+    },
+    SendUrl(){
+      if (this.BrandValue !== null) {
+        alert("开始爬取：" +this.urllist[this.SiteValue].label+ "下的" + this.SplitterList[this.SplitterValue].label+ "下的" + this.BrandList[this.BrandValue].label)
+        var surl = this.BrandList[this.BrandValue].url
+        console.log(surl)
+      }else{
+        if (this.SplitterValue !== null && this.BrandValue === null){
+          alert("开始爬取："+ this.urllist[this.SiteValue].label + "下的" + this.SplitterList[this.SplitterValue].label)
+          var surl = this.SplitterList[this.SplitterValue].url
+          console.log(surl)
+        } else {
+          if (this.SplitterValue === null && this.BrandValue === null) {
+            alert("开始爬取：" + this.urllist[this.SiteValue].label)
+            var surl = this.urllist[this.SiteValue].url
+            console.log(surl)
+          }
+        }
+      }
+
+      //这里写axiox请求 将surl发送到后台
+
     }
   }
 }
