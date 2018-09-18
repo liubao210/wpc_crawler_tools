@@ -344,17 +344,25 @@ export default {
       console.log(val)
       this.SplitterList = this.urllist[val].children
       console.log(this.SplitterList)
-      this.disabled1 = false
+      if (this.SiteValue !== null) {
+        this.disabled1 = false
+      }else{
+        this.disabled1 = true
+      }
     },
     ChangeSplitter(val){
-      splitterUrl = this.SplitterList[val].url
-
+      // var splitterUrl = this.SplitterList[val].url
+      console.log(parseInt(this.SplitterValue))
       //在这里写 axios请求，把选择的splitter的url发送给后台，返回的brand的json数据,赋值给BrandList
-
+      var temp = parseInt(this.SplitterValue)
       // this.BrandList = this.SplitterList[val].children
-      this.disabled2 = false
-      console.log(this.SplitterList)
-      console.log(this.BrandList)
+      if (isNaN(temp)){
+        this.disabled2 = true
+      }else{
+        this.disabled2 = false
+      }
+      // console.log(this.SplitterList)
+      // console.log(this.BrandList)
     },
     change1() {
       this.disabled1 = false
